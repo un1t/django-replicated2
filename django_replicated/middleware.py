@@ -21,10 +21,10 @@ class ReplicationMiddleware(object):
         if router:
             if self.COOKIE_NAME in request.COOKIES:
                 state = 'master'
-            elif request.method in self.SAFE_HTTP_METHODS:
-                state = 'slave'
-            else:
+            elif request.method not in self.SAFE_HTTP_METHODS:
                 state = 'master'
+            else:
+                state = 'slave'
 
             router.set_state(state)
 
