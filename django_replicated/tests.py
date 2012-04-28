@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.test import TestCase, RequestFactory
 from django.test.utils import override_settings as _override_settings
 from flexmock import flexmock
@@ -78,3 +79,36 @@ class ReplicationMiddlewareHttpMethodsTest(TestCase):
     def test_put(self):
         flexmock(ReplicationRouter).should_receive('set_state').with_args('master').once
         self.middleware.process_request(self.request.put('/'))
+
+
+class ReplicationMiddlewareRecentlyUpdatedTest(TestCase):
+
+    SETTINGS = dict(
+            DATABASE_ROUTERS=['django_replicated.ReplicationRouter'],
+    )
+
+    def setUp(self):
+        self.middleware = ReplicationMiddleware()
+        self.request = RequestFactory()
+
+    @override_settings(**SETTINGS)
+    def test_process_request(self):
+        self.request.cookies[ReplicationMiddleware.COOKIE_NAME] = 'any-value'
+        flexmock(ReplicationRouter).should_receive('set_state').with_args('master').once
+        self.middleware.process_request(self.request.get('/'))
+
+    @override_settings(**SETTINGS)
+    def test_process_response_updateable_methods(self):
+        request = self.request.post('/')
+        response = HttpResponseRedirect('/')
+        flexmock(ReplicationRouter).should_receive('is_db_recently_updated').with_args().and_return(True)
+        self.middleware.process_response(request, response)
+        self.assertIn(ReplicationMiddleware.COOKIE_NAME, response.cookies)
+
+    @override_settings(**SETTINGS)
+    def test_process_response_safe_methods(self):
+        request = self.request.get('/')
+        response = HttpResponseRedirect('/')
+        flexmock(ReplicationRouter).should_receive('is_db_recently_updated').with_args().and_return(True)
+        self.middleware.process_response(request, response)
+        self.assertNotIn(ReplicationMiddleware.COOKIE_NAME, response.cookies)
