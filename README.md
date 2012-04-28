@@ -95,24 +95,6 @@ you can always instruct Django ORM to [use a certain database][2].
 [2]: http://docs.djangoproject.com/en/dev/topics/db/multi-db/#manually-selecting-a-database
 
 
-### Decorators
-
-If your system doesn't depend on the method of HTTP request to do writes and
-reads you can use decorators to wrap individual views into master or slave
-replication modes:
-
-    from django_replicated.decorators import use_master, use_slave
-
-    @use_master
-    def my_view(request, ...):
-        # master database used for all db operations during
-        # execution of the view (if not explicitly overridden).
-
-    @use_slave
-    def my_view(request, ...):
-        # same with slave connection
-
-
 ### GET after POST
 
 There is a special case that needs addressing when working with asynchronous
@@ -127,19 +109,3 @@ special technique where handling of a GET request resulting from a redirect
 after a POST is explicitly routed to a master database.
 
 
-### Disabling state switching
-
-There are cases when you want to disable switching of replication modes
-entirely. A most common example is testing your code with tests that use
-non-commiting transactions to preserve data between testcases. Each test is
-called with a default master database which it uses to load fixtures. Then if
-any code that the test calls will switch replication to the slave mode the
-won't see any fixture data in a test slave database because the master never
-commits.
-
-You can disable mode switching for such cases:
-
-    from django_replicated import utils
-    utils.disable_state_change()
-
-(There's also a similar `enalble_state_change()` function.)

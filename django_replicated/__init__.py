@@ -1,1 +1,1 @@
-from router import ReplicationRouter
+from django_replicated.routers import ReplicationRouter
