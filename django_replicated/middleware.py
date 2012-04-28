@@ -10,15 +10,18 @@ def get_router():
         return None
 
 
-class ReplicationMiddleware:
-    HTTP_SAFE_METHODS = ['GET', 'HEAD', 'OPTION']
+class ReplicationMiddleware(object):
+    # see http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1
+    SAFE_HTTP_METHODS = set(['GET', 'HEAD', 'OPTIONS', 'TRACE'])
+    COOKIE_NAME = 'just_updated'
+    COOKIE_VALUE = 'yes'
 
     def process_request(self, request):
         router = get_router()
         if router:
-            if request.COOKIES.get('just_updated') == 'true':
+            if self.COOKIE_NAME in request.COOKIES:
                 state = 'master'
-            elif request.method in self.HTTP_SAFE_METHODS:
+            elif request.method in self.SAFE_HTTP_METHODS:
                 state = 'slave'
             else:
                 state = 'master'
@@ -28,7 +31,7 @@ class ReplicationMiddleware:
     def process_response(self, request, response):
         router = get_router()
         if router:
-            if request.method not in self.HTTP_SAFE_METHODS and router.is_db_recently_updated():
-                response.set_cookie('just_updated', 'true', max_age=router.REPLICATION_INTERVAL)
+            if request.method not in self.SAFE_HTTP_METHODS and router.is_db_recently_updated():
+                response.set_cookie(self.COOKIE_NAME, self.COOKIE_VALUE, max_age=router.REPLICATION_INTERVAL)
 
         return response
