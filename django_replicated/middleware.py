@@ -1,27 +1,28 @@
 # coding: utf-8
 from django import db
+from django_replicated.routers import ReplicationRouter
 
 
 def get_router():
     try:
-        return db.router.routers[0]
+        return [router for router in db.router.routers if isinstance(router, ReplicationRouter)][0]
     except IndexError:
-        pass
+        return None
 
 
 class ReplicationMiddleware:
     HTTP_SAFE_METHODS = ['GET', 'HEAD', 'OPTION']
 
     def process_request(self, request):
-        if request.COOKIES.get('just_updated') == 'true':
-            state = 'master'
-        elif request.method in self.HTTP_SAFE_METHODS:
-            state = 'slave' 
-        else:
-            state = 'master'
-        
         router = get_router()
         if router:
+            if request.COOKIES.get('just_updated') == 'true':
+                state = 'master'
+            elif request.method in self.HTTP_SAFE_METHODS:
+                state = 'slave'
+            else:
+                state = 'master'
+
             router.set_state(state)
 
     def process_response(self, request, response):
