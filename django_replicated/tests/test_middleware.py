@@ -1,25 +1,10 @@
-from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.test import TestCase, RequestFactory
-from django.test.utils import override_settings as _override_settings
 from flexmock import flexmock
+from django_replicated.tests.utils import override_settings
 
 from django_replicated.middleware import get_router, ReplicationMiddleware
 from django_replicated.routers import ReplicationRouter
-
-
-def invalidate_routers():
-    from django.db import router
-    router.__init__(settings.DATABASE_ROUTERS)
-
-def override_settings(**params):
-    def wrap(f):
-        @_override_settings(**params)
-        def call(*args, **kwargs):
-            invalidate_routers()
-            return f(*args, **kwargs)
-        return call
-    return wrap
 
 
 class GetRouterTest(TestCase):
