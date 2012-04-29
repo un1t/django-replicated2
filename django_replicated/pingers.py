@@ -27,7 +27,7 @@ class DjangoDbPinger(object):
             else:
                 db.cursor()
             return True
-        except StandardError:
+        except Exception:
             self.dead_connections[db_alias] = self.time()
             return False
 

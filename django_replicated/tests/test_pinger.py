@@ -11,7 +11,7 @@ class DjangoDbPingerTest(TestCase):
         self.pinger = DjangoDbPinger()
         self.pinger.connections = {
                 'slave1': flexmock(connection=None).should_receive('cursor').mock,
-                'slave2': flexmock(connection=None).should_receive('cursor').and_raise(StandardError()).mock
+                'slave2': flexmock(connection=None).should_receive('cursor').and_raise(Exception()).mock
         }
 
     def test_should_check_alive(self):
@@ -27,7 +27,7 @@ class DjangoDbPinger1Test(TestCase):
         self.pinger = DjangoDbPinger()
         self.pinger.connections = {
                 'slave1': flexmock(connection=flexmock().should_receive('ping').mock),
-                'slave2': flexmock(connection=flexmock().should_receive('ping').and_raise(StandardError()).mock)
+                'slave2': flexmock(connection=flexmock().should_receive('ping').and_raise(Exception()).mock)
         }
 
     def test_should_check_alive(self):
@@ -42,7 +42,7 @@ class DjangoDbPingerCacheTest(TestCase):
     def test_should_cache_dead_connection(self):
         pinger = DjangoDbPinger()
         pinger.connections = {
-                'slave2': flexmock(connection=flexmock().should_receive('ping').once.and_raise(StandardError()).mock)
+                'slave2': flexmock(connection=flexmock().should_receive('ping').once.and_raise(Exception()).mock)
         }
         self.assertFalse(pinger.is_alive('slave2'))
         self.assertFalse(pinger.is_alive('slave2'))
@@ -57,7 +57,7 @@ class DjangoDbPingerCacheTest(TestCase):
 
     @override_settings(DATABASE_DOWNTIME=5)
     def test_should_invalidate_dead_connection_sometimes(self):
-        connection_ping = flexmock().should_receive('ping').and_raise(StandardError())
+        connection_ping = flexmock().should_receive('ping').and_raise(Exception())
         pinger = DjangoDbPinger()
         pinger.connections = {
                 'slave2': flexmock(connection=connection_ping.mock)

@@ -15,7 +15,7 @@ class DatabaseForWriteTest(TestCase):
     def test_should_return_default_database(self):
         router = ReplicationRouter()
         self.assertEquals(db_utils.DEFAULT_DB_ALIAS, router.db_for_write(Book),
-                u"expect database for write is default (master)")
+                "expect database for write is default (master)")
 
 
 class DatabaseForReadTest(TestCase):
@@ -56,11 +56,11 @@ class DatabaseForReadTest(TestCase):
         sequence2 = [router.db_for_read(Book) for n in range(0, 20)]
 
         self.assertEquals(set(['slave1', 'slave2']), set(sequence1),
-                u"expect that sequence1 contans slaves only")
+                "expect that sequence1 contans slaves only")
         self.assertEquals(set(['slave1', 'slave2']), set(sequence2),
-                u"expect that sequence2 contans slaves only")
+                "expect that sequence2 contans slaves only")
         self.assertNotEquals(sequence1, sequence2,
-                u"random sequences could not to be equal")
+                "random sequences could not to be equal")
 
     @override_settings(DATABASES=DATABASES)
     def test_should_not_to_suggest_database_when_slaves_does_not_defined(self):
@@ -78,4 +78,4 @@ class DatabaseForReadTest(TestCase):
         flexmock(router).should_receive('get_pinger').and_return(pinger)
         sequence1 = [router.db_for_read(Book) for n in range(0, 20)]
         self.assertEquals(set(['slave1']), set(sequence1),
-                u"expect that sequence1 contans alive slaves only")
+                "expect that sequence1 contans alive slaves only")
