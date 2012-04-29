@@ -11,20 +11,17 @@ class ReplicationMiddleware(object):
         router = self.get_router()
         if router:
             if self.COOKIE_NAME in request.COOKIES:
-                state = 'master'
+                router.disable_slaves()
             elif request.method not in self.SAFE_HTTP_METHODS:
-                state = 'master'
+                router.disable_slaves()
             else:
-                state = 'slave'
-
-            router.set_state(state)
+                router.enable_slaves()
 
     def process_response(self, request, response):
         router = self.get_router()
         if router:
             if request.method not in self.SAFE_HTTP_METHODS and router.is_db_recently_updated():
                 response.set_cookie(self.COOKIE_NAME, self.COOKIE_VALUE, max_age=router.replication_interval)
-
         return response
 
     def get_router(self):

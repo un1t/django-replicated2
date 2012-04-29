@@ -29,7 +29,7 @@ class ReplicationMiddlewareHttpSafeMethodsTest(TestCase):
     def setUp(self):
         self.middleware = ReplicationMiddleware()
         self.request = RequestFactory()
-        self.router = flexmock().should_receive('set_state').with_args('slave').once
+        self.router = flexmock().should_receive('enable_slaves').with_args().once
         flexmock(self.middleware).should_receive('get_router').and_return(self.router.mock)
 
     @override_settings(**SETTINGS)
@@ -60,7 +60,7 @@ class ReplicationMiddlewareHttpMethodsTest(TestCase):
     def setUp(self):
         self.middleware = ReplicationMiddleware()
         self.request = RequestFactory()
-        self.router = flexmock().should_receive('set_state').with_args('master').once
+        self.router = flexmock().should_receive('disable_slaves').with_args().once
         flexmock(self.middleware).should_receive('get_router').and_return(self.router.mock)
 
     @override_settings(**SETTINGS)
@@ -89,7 +89,7 @@ class ReplicationMiddlewareRecentlyUpdatedTest(TestCase):
     @override_settings(**SETTINGS)
     def test_process_request(self):
         self.request.cookies[ReplicationMiddleware.COOKIE_NAME] = 'any-value'
-        router = flexmock().should_receive('set_state').with_args('master').once
+        router = flexmock().should_receive('disable_slaves').with_args().once
         flexmock(self.middleware).should_receive('get_router').and_return(router.mock)
         self.middleware.process_request(self.request.get('/'))
 

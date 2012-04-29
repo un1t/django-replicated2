@@ -45,7 +45,13 @@ class DatabaseForReadTest(TestCase):
     }
     @override_settings(DATABASES=DATABASES_WITH_SLAVES)
     def test_should_return_random_slave(self):
+        pinger = flexmock()
+        pinger.should_receive('is_alive').with_args('slave1').and_return(True)
+        pinger.should_receive('is_alive').with_args('slave2').and_return(True)
+
         router = ReplicationRouter()
+        flexmock(router).should_receive('get_pinger').and_return(pinger)
+
         sequence1 = [router.db_for_read(Book) for n in range(0, 20)]
         sequence2 = [router.db_for_read(Book) for n in range(0, 20)]
 
@@ -69,7 +75,7 @@ class DatabaseForReadTest(TestCase):
         pinger.should_receive('is_alive').with_args('slave2').and_return(False)
 
         router = ReplicationRouter()
-        router.pinger = pinger
+        flexmock(router).should_receive('get_pinger').and_return(pinger)
         sequence1 = [router.db_for_read(Book) for n in range(0, 20)]
         self.assertEquals(set(['slave1']), set(sequence1),
                 u"expect that sequence1 contans alive slaves only")
