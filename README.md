@@ -35,7 +35,7 @@ SQL operations.
 
 3.  Configure a replication router:
 
-        DATABASE_ROUTERS = ['django_replicated.ReplicationRouter']
+        DATABASE_ROUTERS = ['django_replicated.routers.ReplicationRouter']
 
 4.  Configure timeout to exclude a database from the available list after an
     unsuccessful ping:

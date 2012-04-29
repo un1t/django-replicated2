@@ -1,13 +1,4 @@
 # coding: utf-8
-from django import db
-from django_replicated.routers import ReplicationRouter
-
-
-def get_router():
-    try:
-        return [router for router in db.router.routers if isinstance(router, ReplicationRouter)][0]
-    except IndexError:
-        return None
 
 
 class ReplicationMiddleware(object):
@@ -17,7 +8,7 @@ class ReplicationMiddleware(object):
     COOKIE_VALUE = 'yes'
 
     def process_request(self, request):
-        router = get_router()
+        router = self.get_router()
         if router:
             if self.COOKIE_NAME in request.COOKIES:
                 state = 'master'
@@ -29,9 +20,19 @@ class ReplicationMiddleware(object):
             router.set_state(state)
 
     def process_response(self, request, response):
-        router = get_router()
+        router = self.get_router()
         if router:
             if request.method not in self.SAFE_HTTP_METHODS and router.is_db_recently_updated():
                 response.set_cookie(self.COOKIE_NAME, self.COOKIE_VALUE, max_age=router.replication_interval)
 
         return response
+
+    def get_router(self):
+        if not hasattr(self, '_router'):
+            from django import db
+            from django_replicated.routers import ReplicationRouter
+            try:
+                self._router = [router for router in db.router.routers if isinstance(router, ReplicationRouter)][0]
+            except IndexError:
+                self._router = None
+        return self._router
