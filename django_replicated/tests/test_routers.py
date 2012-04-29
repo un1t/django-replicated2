@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.db import models, utils as db_utils
 from django_replicated.tests.utils import override_settings
+from flexmock import flexmock
 
 from django_replicated.routers import ReplicationRouter
 
@@ -60,3 +61,15 @@ class DatabaseForReadTest(TestCase):
         router = ReplicationRouter()
         self.assertEquals(router.db_for_read(Book), None)
 
+
+    @override_settings(DATABASES=DATABASES_WITH_SLAVES)
+    def test_should_check_slaves_is_alive(self):
+        pinger = flexmock()
+        pinger.should_receive('is_alive').with_args('slave1').and_return(True)
+        pinger.should_receive('is_alive').with_args('slave2').and_return(False)
+
+        router = ReplicationRouter()
+        router.pinger = pinger
+        sequence1 = [router.db_for_read(Book) for n in range(0, 20)]
+        self.assertEquals(set(['slave1']), set(sequence1),
+                u"expect that sequence1 contans alive slaves only")

@@ -8,13 +8,11 @@ class ReplicationRouter(object):
 
     def __init__(self):
         from django.db import utils as db_utils
-        from django_replicated.pingers import DjangoDbPinger
 
         self.last_update_time = 0
         self.master_db_alias = db_utils.DEFAULT_DB_ALIAS
         self.slave_db_aliases = [db_alias for db_alias, params in settings.DATABASES.items() if params.get('TEST_MIRROR') == self.master_db_alias]
         self.state = 'slave'
-        self.pinger = DjangoDbPinger()
         self.replication_interval = settings.DATABASE_REPLICATION_INTERVAL
 
     def allow_relation(self, obj1, obj2, **hints):
@@ -33,7 +31,7 @@ class ReplicationRouter(object):
 
         random.shuffle(self.slave_db_aliases)
         for slave_db_alias in self.slave_db_aliases:
-            if self.pinger.is_alive(slave_db_alias):
+            if self.get_pinger().is_alive(slave_db_alias):
                 return slave_db_alias
 
         return None # there is no suggestion
@@ -46,3 +44,9 @@ class ReplicationRouter(object):
 
     def is_db_recently_updated(self):
         return time.time() - self.last_update_time < self.replication_interval
+
+    def get_pinger(self):
+        if not hasattr(self, 'pinger'):
+            from django_replicated.pingers import DjangoDbPinger
+            self.pinger = DjangoDbPinger()
+        return self.pinger
