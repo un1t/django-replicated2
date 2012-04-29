@@ -15,32 +15,32 @@ SQL operations.
 
 2.  In settings.py configure your master and slave databases in a standard way:
 
-        DATABASES {
+        from django_replicated.settings import *
+
+        DATABASES = {
             'default': {
                 # ENGINE, HOST, etc.
             },
             'slave1': {
                 # ENGINE, HOST, etc.
+                'TEST_MIRROR': 'default',
             },
             'slave2': {
                 # ENGINE, HOST, etc.
+                'TEST_MIRROR': 'default',
             },
         }
 
-3.  Teach django_replicated which databases are slaves:
-
-        DATABASE_SLAVES = ['slave1', 'slave2']
-
     The 'default' database is always treated as master.
 
-4.  Configure a replication router:
+3.  Configure a replication router:
 
         DATABASE_ROUTERS = ['django_replicated.ReplicationRouter']
 
-5.  Configure timeout to exclude a database from the available list after an
+4.  Configure timeout to exclude a database from the available list after an
     unsuccessful ping:
 
-        DATABASE_DOWNTIME = 20
+        DATABASES_DOWNTIME = 20
 
     The default downtime value is 60 seconds.
 

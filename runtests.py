@@ -1,13 +1,22 @@
 #!/usr/bin/env python
 
+from django_replicated.settings import *
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': ':memory:',
     },
-    'slave': {
+    'slave1': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': ':memory:',
+        'TEST_MIRROR': 'default',
+    },
+    'slave2': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+        'TEST_MIRROR': 'default',
     }
 }
 

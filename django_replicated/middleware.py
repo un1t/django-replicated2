@@ -32,6 +32,6 @@ class ReplicationMiddleware(object):
         router = get_router()
         if router:
             if request.method not in self.SAFE_HTTP_METHODS and router.is_db_recently_updated():
-                response.set_cookie(self.COOKIE_NAME, self.COOKIE_VALUE, max_age=router.REPLICATION_INTERVAL)
+                response.set_cookie(self.COOKIE_NAME, self.COOKIE_VALUE, max_age=router.replication_interval)
 
         return response
