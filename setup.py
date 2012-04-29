@@ -1,5 +1,4 @@
-import sys
-from distutils.core import setup
+from setuptools import setup
 
 
 setup(
@@ -7,6 +6,7 @@ setup(
     description='Django DB router for stateful master-slave replication',
     packages=[
         'django_replicated',
+        'django_replicated.tests',
     ],
-    scripts=['runtests.py'] if 'develop' in sys.argv else []
+    test_suite = "runtests.runtests",
 )

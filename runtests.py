@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from django_replicated.settings import *
+# Application test settings
 
+from django_replicated.settings import *
 
 DATABASES = {
     'default': {
@@ -23,10 +24,23 @@ DATABASES = {
 INSTALLED_APPS = ['django_replicated']
 
 
+# Configure settings
+
+import sys
+from django.conf import settings
+
+settings.configure(**dict([(k,v) for k,v in globals().items() if k.isupper()]))
+
+# setup.py test runner
+def runtests():
+    from django.test.utils import get_runner
+
+    test_runner = get_runner(settings)(verbosity=1, interactive=True, failfast=False)
+    failures = test_runner.run_tests(INSTALLED_APPS)
+    sys.exit(failures)
+
+
 if __name__ == "__main__":
-    import sys
-    from django.conf import settings
     from django.core.management import execute_from_command_line
 
-    settings.configure(**dict([(k,v) for k,v in globals().items() if k.isupper()]))
     execute_from_command_line(sys.argv[:1] + ['test'] + sys.argv[1:])
