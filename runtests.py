@@ -23,6 +23,12 @@ DATABASES = {
 
 INSTALLED_APPS = ['django_replicated']
 
+DATABASE_ROUTERS = ['django_replicated.routers.ReplicationRouter']
+
+MIDDLEWARE_CLASSES = [
+    'django_replicated.middleware.ReplicationMiddleware',
+]
+
 
 # Configure settings
 

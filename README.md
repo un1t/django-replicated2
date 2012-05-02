@@ -37,10 +37,17 @@ SQL operations.
 
         DATABASE_ROUTERS = ['django_replicated.routers.ReplicationRouter']
 
-4.  Configure timeout to exclude a database from the available list after an
+4. Configure interval in seconds for database replication, during which we'll
+   try not to use slave databases:
+
+        DATABASE_REPLICATION_INTERVAL = 5
+
+    The default database replication interval value is 5 seconds.
+
+5.  Configure timeout to exclude a database from the available list after an
     unsuccessful ping:
 
-        DATABASES_DOWNTIME = 20
+        DATABASE_DOWNTIME = 60
 
     The default downtime value is 60 seconds.
 
