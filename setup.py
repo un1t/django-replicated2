@@ -4,10 +4,10 @@ import sys
 
 
 setup_data = {
-    'name': 'django-replicated',
-    'version': __import__('django_replicated').__version__,
+    'name': 'django-replicated2',
+    'version': __import__('django_replicated2').__version__,
     'description': 'Django DB router for stateful master-slave replication',
-    'packages': ['django_replicated', 'django_replicated.tests'],
+    'packages': ['django_replicated2', 'django_replicated2.tests'],
     'platforms': "All",
     'classifiers': [
         'Topic :: Software Development :: Libraries :: Python Modules',

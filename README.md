@@ -15,7 +15,7 @@ SQL operations.
 
 2.  In settings.py configure your master and slave databases in a standard way:
 
-        from django_replicated.settings import *
+        from django_replicated2.settings import *
 
         DATABASES = {
             'default': {
@@ -35,7 +35,7 @@ SQL operations.
 
 3.  Configure a replication router:
 
-        DATABASE_ROUTERS = ['django_replicated.routers.ReplicationRouter']
+        DATABASE_ROUTERS = ['django_replicated2.routers.ReplicationRouter']
 
 4. Configure interval in seconds for database replication, during which we'll
    try not to use slave databases:
@@ -81,7 +81,7 @@ work is done by simply using a middleware :
 
     MIDDLEWARE_CLASSES = [
         ...
-        'django_replicated.middleware.ReplicationMiddleware',
+        'django_replicated2.middleware.ReplicationMiddleware',
         ...
     ]
 

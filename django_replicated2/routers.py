@@ -50,6 +50,6 @@ class ReplicationRouter(object):
 
     def get_pinger(self):
         if not hasattr(self, '_pinger'):
-            from django_replicated.pingers import DjangoDbPinger
+            from django_replicated2.pingers import DjangoDbPinger
             self._pinger = DjangoDbPinger()
         return self._pinger

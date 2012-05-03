@@ -1,15 +1,15 @@
 from django.http import HttpResponseRedirect
 from django.test import TestCase, RequestFactory
 from flexmock import flexmock
-from django_replicated.tests.utils import override_settings
+from django_replicated2.tests.utils import override_settings
 
-from django_replicated.middleware import ReplicationMiddleware
-from django_replicated.routers import ReplicationRouter
+from django_replicated2.middleware import ReplicationMiddleware
+from django_replicated2.routers import ReplicationRouter
 
 
 class GetReplicationRouterTest(TestCase):
 
-    @override_settings(DATABASE_ROUTERS=['django_replicated.routers.ReplicationRouter'])
+    @override_settings(DATABASE_ROUTERS=['django_replicated2.routers.ReplicationRouter'])
     def test_should_return_replication_router(self):
         router = ReplicationMiddleware().get_router()
         self.assertTrue(isinstance(router, ReplicationRouter))
@@ -23,7 +23,7 @@ class GetReplicationRouterTest(TestCase):
 class ReplicationMiddlewareHttpSafeMethodsTest(TestCase):
 
     SETTINGS = dict(
-            DATABASE_ROUTERS=['django_replicated.routers.ReplicationRouter'],
+            DATABASE_ROUTERS=['django_replicated2.routers.ReplicationRouter'],
     )
 
     def setUp(self):
@@ -54,7 +54,7 @@ class ReplicationMiddlewareHttpSafeMethodsTest(TestCase):
 class ReplicationMiddlewareHttpMethodsTest(TestCase):
 
     SETTINGS = dict(
-            DATABASE_ROUTERS=['django_replicated.routers.ReplicationRouter'],
+            DATABASE_ROUTERS=['django_replicated2.routers.ReplicationRouter'],
     )
 
     def setUp(self):
@@ -79,7 +79,7 @@ class ReplicationMiddlewareHttpMethodsTest(TestCase):
 class ReplicationMiddlewareRecentlyUpdatedTest(TestCase):
 
     SETTINGS = dict(
-            DATABASE_ROUTERS=['django_replicated.routers.ReplicationRouter'],
+            DATABASE_ROUTERS=['django_replicated2.routers.ReplicationRouter'],
     )
 
     def setUp(self):

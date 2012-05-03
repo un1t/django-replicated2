@@ -26,7 +26,7 @@ class ReplicationMiddleware(object):
     def get_router(self):
         if not hasattr(self, '_router'):
             from django import db
-            from django_replicated.routers import ReplicationRouter
+            from django_replicated2.routers import ReplicationRouter
             try:
                 self._router = [router for router in db.router.routers if isinstance(router, ReplicationRouter)][0]
             except IndexError:

@@ -2,7 +2,7 @@
 
 # Application test settings
 
-from django_replicated.settings import *
+from django_replicated2.settings import *
 
 DATABASES = {
     'default': {
@@ -21,12 +21,12 @@ DATABASES = {
     }
 }
 
-INSTALLED_APPS = ['django_replicated']
+INSTALLED_APPS = ['django_replicated2']
 
-DATABASE_ROUTERS = ['django_replicated.routers.ReplicationRouter']
+DATABASE_ROUTERS = ['django_replicated2.routers.ReplicationRouter']
 
 MIDDLEWARE_CLASSES = [
-    'django_replicated.middleware.ReplicationMiddleware',
+    'django_replicated2.middleware.ReplicationMiddleware',
 ]
 
 

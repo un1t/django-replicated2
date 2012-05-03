@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.db import models, utils as db_utils
-from django_replicated.tests.utils import override_settings
+from django_replicated2.tests.utils import override_settings
 from flexmock import flexmock
 
-from django_replicated.routers import ReplicationRouter
+from django_replicated2.routers import ReplicationRouter
 
 
 class Book(models.Model):

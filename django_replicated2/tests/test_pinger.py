@@ -1,8 +1,8 @@
 from django.test import TestCase
 from flexmock import flexmock
-from django_replicated.tests.utils import override_settings
+from django_replicated2.tests.utils import override_settings
 
-from django_replicated.pingers import DjangoDbPinger
+from django_replicated2.pingers import DjangoDbPinger
 
 
 class DjangoDbPingerTest(TestCase):
